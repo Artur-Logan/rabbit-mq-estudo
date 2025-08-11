@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # Banco do serviço PRODUTOR
+  produtor-db:
+    image: postgres:15
+    container_name: postgres-produtor
+    environment:
+      POSTGRES_DB: microsservicos
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+    ports:
+      - "5432:5432"
+    volumes:
+      - produtor_data:/var/lib/postgresql/data
+
+  # Banco do serviço FAZENDA
+  fazenda-db:
+    image: postgres:15
+    container_name: postgres-fazenda
+    environment:
+      POSTGRES_DB: fazenda_db
+      POSTGRES_USER: fazenda_user
+      POSTGRES_PASSWORD: fazenda_pass
+    ports:
+      - "5433:5432"
+    volumes:
+      - fazenda_data:/var/lib/postgresql/data
+
+  # RabbitMQ (gerenciado centralmente)
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672" # Comunicação entre microsserviços
+      - "15672:15672" # Painel web: http://localhost:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+volumes:
+  produtor_data:
+  fazenda_data:
